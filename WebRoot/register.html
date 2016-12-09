@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="UTF-8">
+<title>用户注册</title>
+
+<link rel="stylesheet" href="css/work02.css" />
+<!-- 导入 jQuery框架 -->
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+
+<!-- 应用jQuery -->
+<script type="text/javascript">
+	$(document).ready(function() {
+		var name = false;
+		var pwd1 = false;
+		var pwd2 = false;
+		var phone = false;
+		$("#uname").blur(function() {
+			var uname = this.value;
+			var namePattern = /^[a-zA-Z0-9_\u4e00-\u9fa5]{2,20}$/;
+			name = namePattern.test(uname);
+			if (name)
+				$("#divuname").css("color", "black");
+			else {
+				$("#divuname").css("color", "red");
+				name = true;
+			}
+			$.ajax({
+				type:"GET",
+				url:"CheckUser",
+				data:"uname="+uname,
+				success:function(msg){
+					if(msg=="f")
+						alert("用户名已被占用")
+				}
+			});	
+		});
+		$("#upwd").blur(function() {
+			var upwd = this.value;
+			var len = upwd.length;
+			if (len<6 || len>8)
+				$("#divupwd").css("color", "red");
+			else {
+				pwd1 = true;
+				$("#divupwd").css("color", "black");
+			}
+		});
+		$("#conpwd").blur(function() {
+			var pwd = $("#upwd").val();
+			var conpwd = this.value;
+			if (pwd == conpwd) {
+				pwd2 = true;
+				$("#divconpwd").css("color", "black");
+			} else
+				$("#divconpwd").css("color", "red");
+		});
+		$("#utel").blur(function() {
+			var utel = this.value;
+			var telPattern = /^1[34578]\d{9}$/;
+			phone = telPattern.test(utel);
+			if (phone)
+				$("#divutel").css("color", "black");
+			else
+				$("#divutel").css("color", "red");
+
+		});
+		var agree = $("#uagree").attr("checked");
+		$("#sb").click(function() {
+			return name && pwd1 && pwd2 && phone && agree;
+		});
+	});
+</script>
+</head>
+
+<body>
+	<h3>---新用户正在进行注册---</h3>
+	<hr />
+	<br />
+	<form action="HandleRegister" method="post"
+		onsubmit="return checkAll();">
+		<div id="out">
+			<div class="int1">用户注册</div>
+			<div class="int2">
+				<div class="int21">
+					<b class="int22">*</b>用户名：
+				</div>
+				<div class="int23">
+					<input type="text" name="uname" id="uname" value="" maxlength="10"
+						class="int" />
+				</div>
+				<div class="int24" id="divuname">
+					由字母、数字、下划线 和<br /> 汉子组成，长度在2-20之间
+				</div>
+			</div>
+			<div class="int2">
+				<div class="int21">
+					<b class="int22">*</b>密码：
+				</div>
+				<div class="int23">
+					<input type="password" name="upwd" id="upwd" value="" maxlength="8"
+						class="int" />
+				</div>
+				<div class="int24" id="divupwd">
+					密码至少不得少于6位，<br /> 最多不超过8位
+				</div>
+			</div>
+			<div class="int2">
+				<div class="int21">
+					<b class="int22">*</b>密码确认：
+				</div>
+				<div class="int23">
+					<input type="password" name="conpwd" id="conpwd" value=""
+						class="int" />
+				</div>
+				<div class="int24" id="divconpwd">必须与上一行密码相同</div>
+			</div>
+			<div class="int2">
+				<div class="int21">
+					<b class="int22">*</b>手机号：
+				</div>
+				<div class="int23">
+					<input type="tel" name="utel" id="utel" value="" class="int" />
+				</div>
+				<div class="int24" id="divutel">必须是有效的手机号</div>
+			</div>
+			<label> <input type="checkbox" name="uagree" id="uagree"
+				value="" class="int0" />
+				&nbsp;我已阅读并同意本协议&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span id="spanagree"></span>
+			</label>
+			<div class="int6">
+				<input type="submit" id="sb" value="同意协议并注册" class="int01" />
+			</div>
+		</div>
+	</form>
+</body>
+</html>
